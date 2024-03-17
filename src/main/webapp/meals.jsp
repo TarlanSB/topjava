@@ -10,7 +10,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<h3><a href="add">Add Meal</a></h3>
+<h3><a href="meals?action=add">Add Meal</a></h3>
 
 <table border="1" cellpadding="8" cellspacing="0">
     <tr>
@@ -21,9 +21,8 @@
         <th>Delete</th>
     </tr>
 
-
     <c:forEach var="meal" items="${meals}">
-        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal"/>
+        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
 
     <tr style="color: ${meal.excess ? 'red' : 'green'}">
         <td>

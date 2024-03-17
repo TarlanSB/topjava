@@ -9,6 +9,7 @@
 
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
         <form method="post" action="meals">
+
             <input type="hidden" name="id" value="${meal.id}">
             <dl>
                 <dt>DateTime:</dt>
