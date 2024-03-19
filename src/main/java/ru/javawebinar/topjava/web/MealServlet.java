@@ -21,7 +21,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealTo.class);
-    private static final Integer serialVersionUID = 1;
+    private static final Integer serialVersionUID = -1;
     private static final String insertOrEdit = "/mealForm.jsp";
     private static final String mealList = "/meals.jsp";
 
@@ -35,7 +35,7 @@ public class MealServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("localDateTime"));
+        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
         int id = Integer.parseInt(request.getParameter("id"));
@@ -100,6 +100,6 @@ public class MealServlet extends HttpServlet {
     private void editMeal(HttpServletRequest request) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Meal meal = listStorage.get(id);
-        request.setAttribute("meal", listStorage.getAll());
+        request.setAttribute("meal", meal);
     }
 }

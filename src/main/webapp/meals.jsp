@@ -21,18 +21,18 @@
         <th>Delete</th>
     </tr>
 
-    <c:forEach var="meal" items="${meals}">
-        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+    <c:forEach var="mealTo" items="${meals}">
+        <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo"/>
 
-    <tr style="color: ${meal.excess ? 'red' : 'green'}">
+    <tr style="color: ${mealTo.excess ? 'red' : 'green'}">
         <td>
-            <fmt:parseDate value="${meal.dateTime}" var="parsedDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
+            <fmt:parseDate value="${mealTo.dateTime}" var="parsedDateTime" pattern="yyyy-MM-dd'T'HH:mm"/>
             <fmt:formatDate pattern="yyyy-MM-dd HH:mm" type="both" value="${parsedDateTime}"/>
         </td>
-        <td>${meal.description}</td>
-        <td>${meal.calories}</td>
-        <td><a href="meals?id=${meal.id}&action=edit">Update</a></td>
-        <td><a href="meals?id=${meal.id}&action=delete">Delete</a></td>
+        <td>${mealTo.description}</td>
+        <td>${mealTo.calories}</td>
+        <td><a href="meals?id=${mealTo.id}&action=edit">Update</a></td>
+        <td><a href="meals?id=${mealTo.id}&action=delete">Delete</a></td>
 
     </tr>
     </c:forEach>
