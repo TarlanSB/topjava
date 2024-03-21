@@ -5,7 +5,7 @@
     <section>
         <h3><a href="index.html">Home</a></h3>
         <hr>
-        <h2>${param.action == 'edit' ? 'Edit meal' : 'Add meal'}</h2>
+        <h2>${param.action == 'update' ? 'Edit meal' : 'Add meal'}</h2>
 
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
         <form method="post" action="meals">

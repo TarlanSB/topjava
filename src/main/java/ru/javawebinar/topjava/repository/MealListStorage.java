@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static ru.javawebinar.topjava.util.MealsUtil.MEALS;
 
 public class MealListStorage implements MealStorage {
-    public final AtomicInteger counter = new AtomicInteger(1);
+    public final AtomicInteger counter = new AtomicInteger(0);
     private final List<Meal> mealList = new CopyOnWriteArrayList<>();
 
     {
@@ -19,7 +19,7 @@ public class MealListStorage implements MealStorage {
 
     @Override
     public Meal create(Meal meal) {
-        meal.setId(counter.incrementAndGet());
+        meal.setId(counter.getAndIncrement());
         mealList.add(meal);
         return meal;
     }
@@ -33,9 +33,7 @@ public class MealListStorage implements MealStorage {
 
     @Override
     public void delete(int id) {
-        if (isExist(id)) {
-            mealList.remove(get(id));
-        }
+        mealList.remove(id);
     }
 
     @Override
@@ -49,6 +47,6 @@ public class MealListStorage implements MealStorage {
     }
 
     public boolean isExist(int id) {
-        return id != 0;
+        return id >= 0;
     }
 }

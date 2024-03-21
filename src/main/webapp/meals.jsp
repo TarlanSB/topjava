@@ -10,7 +10,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<h3><a href="meals?action=add">Add Meal</a></h3>
+<h3><a href="meals?action=create">Add Meal</a></h3>
 
 <table border="1" cellpadding="8" cellspacing="0">
     <tr>
@@ -31,7 +31,7 @@
         </td>
         <td>${mealTo.description}</td>
         <td>${mealTo.calories}</td>
-        <td><a href="meals?id=${mealTo.id}&action=edit">Update</a></td>
+        <td><a href="meals?id=${mealTo.id}&action=update">Update</a></td>
         <td><a href="meals?id=${mealTo.id}&action=delete">Delete</a></td>
 
     </tr>

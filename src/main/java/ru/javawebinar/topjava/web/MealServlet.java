@@ -15,13 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealTo.class);
-    private static final Integer serialVersionUID = -1;
+    private static final Integer serialVersionUID = 1;
     private static final String insertOrEdit = "/mealForm.jsp";
     private static final String mealList = "/meals.jsp";
 
@@ -38,10 +38,10 @@ public class MealServlet extends HttpServlet {
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        int id = Integer.parseInt(request.getParameter("id"));
+        int id = isIdEmpty(request);
         Meal meal = new Meal(id, dateTime, description, calories);
 
-        if (meal.getId() == 0) {
+        if (meal.getId() == -1) {
             listStorage.create(meal);
         } else {
             meal.setId(id);
@@ -49,7 +49,7 @@ public class MealServlet extends HttpServlet {
         }
 
         RequestDispatcher view = request.getRequestDispatcher(mealList);
-        request.setAttribute("meals", listStorage.getAll());
+        request.setAttribute("meals", MealsUtil.filteredByStreams(listStorage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         view.forward(request, response);
     }
 
@@ -57,49 +57,53 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
         String action = request.getParameter("action");
-        String forward = "";
 
         if (action == null) {
             action = "mealList";
         }
 
         switch (action) {
-            case "mealList":
-                forward = mealList;
-                mealList(request);
-                break;
             case "delete":
-                forward = mealList;
-                deleteMeal(request);
+                deleteMeal(request, response);
                 break;
-            case "add":
-            case "edit":
-                forward = insertOrEdit;
-                editMeal(request);
+            case "create":
+                createMeal(request, response);
                 break;
+            case "update":
+                updateMeal(request, response);
+                break;
+            case "mealList":
             default:
-                forward = insertOrEdit;
+                mealList(request, response);
+                break;
         }
-        int caloriesPerDay = 2000;
-        List<MealTo> mealsTo = MealsUtil.filteredByStreams(listStorage.getAll(), LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
-        request.setAttribute("meals", mealsTo);
-        RequestDispatcher view = request.getRequestDispatcher(forward);
-        view.forward(request, response);
     }
 
-    private void deleteMeal(HttpServletRequest request) throws ServletException, IOException {
+    private void deleteMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         listStorage.delete(id);
-        request.setAttribute("meals", listStorage.getAll());
+        response.sendRedirect("meals");
     }
 
-    private void mealList(HttpServletRequest request) throws ServletException, IOException {
-        request.setAttribute("meals", listStorage.getAll());
+    private void mealList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("meals", MealsUtil.filteredByStreams(listStorage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+        request.getRequestDispatcher(mealList).forward(request, response);
     }
 
-    private void editMeal(HttpServletRequest request) throws ServletException, IOException {
+    private void updateMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Meal meal = listStorage.get(id);
         request.setAttribute("meal", meal);
+        request.getRequestDispatcher(insertOrEdit).forward(request, response);
+    }
+
+    private void createMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 2000);
+        request.setAttribute("meal", meal);
+        request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+    }
+
+    private int isIdEmpty(HttpServletRequest request) {
+        return request.getParameter("id").isEmpty() ? -1 : Integer.parseInt(request.getParameter("id"));
     }
 }
