@@ -38,7 +38,7 @@ public class MealServlet extends HttpServlet {
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        int id = isIdEmpty(request);
+        int id = newId(request);
         Meal meal = new Meal(id, dateTime, description, calories);
 
         if (meal.getId() == -1) {
@@ -103,7 +103,7 @@ public class MealServlet extends HttpServlet {
         request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
     }
 
-    private int isIdEmpty(HttpServletRequest request) {
+    private int newId(HttpServletRequest request) {
         return request.getParameter("id").isEmpty() ? -1 : Integer.parseInt(request.getParameter("id"));
     }
 }

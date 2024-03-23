@@ -14,5 +14,4 @@ public interface MealStorage {
     Meal get(int id);
 
     List<Meal> getAll();
-
 }

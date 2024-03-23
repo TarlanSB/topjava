@@ -33,12 +33,17 @@ public class MealListStorage implements MealStorage {
 
     @Override
     public void delete(int id) {
-        mealList.remove(id);
+        mealList.remove(get(id));
     }
 
     @Override
     public Meal get(int id) {
-        return mealList.get(id);
+        for (Meal meal : mealList) {
+            if (meal.getId() == id) {
+                return meal;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -46,7 +51,7 @@ public class MealListStorage implements MealStorage {
         return new ArrayList<>(mealList);
     }
 
-    public boolean isExist(int id) {
+    private boolean isExist(int id) {
         return id >= 0;
     }
 }
