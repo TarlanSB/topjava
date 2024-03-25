@@ -3,11 +3,9 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.repository.MealListStorage;
+import ru.javawebinar.topjava.repository.InMemoryMealStorage;
 import ru.javawebinar.topjava.repository.MealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +27,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        super.init();
-        listStorage = new MealListStorage();
+        listStorage = new InMemoryMealStorage();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,19 +35,16 @@ public class MealServlet extends HttpServlet {
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        int id = newId(request);
+        Integer id = newId(request);
         Meal meal = new Meal(id, dateTime, description, calories);
 
-        if (meal.getId() == -1) {
+        if (meal.getId() == null) {
             listStorage.create(meal);
         } else {
             meal.setId(id);
             listStorage.update(meal);
         }
-
-        RequestDispatcher view = request.getRequestDispatcher(mealList);
-        request.setAttribute("meals", MealsUtil.filteredByStreams(listStorage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
-        view.forward(request, response);
+        response.sendRedirect("meals");
     }
 
     @Override
@@ -103,7 +97,7 @@ public class MealServlet extends HttpServlet {
         request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
     }
 
-    private int newId(HttpServletRequest request) {
-        return request.getParameter("id").isEmpty() ? -1 : Integer.parseInt(request.getParameter("id"));
+    private Integer newId(HttpServletRequest request) {
+        return request.getParameter("id").isEmpty() ? null : Integer.valueOf(request.getParameter("id"));
     }
 }

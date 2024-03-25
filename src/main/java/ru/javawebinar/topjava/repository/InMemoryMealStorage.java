@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static ru.javawebinar.topjava.util.MealsUtil.MEALS;
+import static ru.javawebinar.topjava.util.MealsUtil.meals;
 
-public class MealListStorage implements MealStorage {
-    public final AtomicInteger counter = new AtomicInteger(0);
+public class InMemoryMealStorage implements MealStorage {
+    private final AtomicInteger counter = new AtomicInteger(1);
     private final List<Meal> mealList = new CopyOnWriteArrayList<>();
 
     {
-        MEALS.forEach(this::create);
+        meals.forEach(this::create);
     }
 
     @Override
@@ -26,8 +26,10 @@ public class MealListStorage implements MealStorage {
 
     @Override
     public void update(Meal meal) {
-        if (isExist(meal.getId())) {
-            mealList.set(meal.getId(), meal);
+        for (int i = 0; i < mealList.size(); i++) {
+            if (mealList.get(i).getId().equals(meal.getId())) {
+                mealList.set(i, meal);
+            }
         }
     }
 
@@ -49,9 +51,5 @@ public class MealListStorage implements MealStorage {
     @Override
     public List<Meal> getAll() {
         return new ArrayList<>(mealList);
-    }
-
-    private boolean isExist(int id) {
-        return id >= 0;
     }
 }
