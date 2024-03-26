@@ -23,11 +23,11 @@ public class MealServlet extends HttpServlet {
     private static final String insertOrEdit = "/mealForm.jsp";
     private static final String mealList = "/meals.jsp";
 
-    private MealStorage listStorage;
+    private MealStorage mealStorage;
 
     @Override
     public void init() throws ServletException {
-        listStorage = new InMemoryMealStorage();
+        mealStorage = new InMemoryMealStorage();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,10 +39,10 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(id, dateTime, description, calories);
 
         if (meal.getId() == null) {
-            listStorage.create(meal);
+            mealStorage.create(meal);
         } else {
             meal.setId(id);
-            listStorage.update(meal);
+            mealStorage.update(meal);
         }
         response.sendRedirect("meals");
     }
@@ -75,18 +75,18 @@ public class MealServlet extends HttpServlet {
 
     private void deleteMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        listStorage.delete(id);
+        mealStorage.delete(id);
         response.sendRedirect("meals");
     }
 
     private void mealList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("meals", MealsUtil.filteredByStreams(listStorage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+        request.setAttribute("meals", MealsUtil.filteredByStreams(mealStorage.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         request.getRequestDispatcher(mealList).forward(request, response);
     }
 
     private void updateMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Meal meal = listStorage.get(id);
+        Meal meal = mealStorage.get(id);
         request.setAttribute("meal", meal);
         request.getRequestDispatcher(insertOrEdit).forward(request, response);
     }

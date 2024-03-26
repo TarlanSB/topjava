@@ -2,16 +2,16 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ru.javawebinar.topjava.util.MealsUtil.meals;
 
 public class InMemoryMealStorage implements MealStorage {
     private final AtomicInteger counter = new AtomicInteger(1);
-    private final List<Meal> mealList = new CopyOnWriteArrayList<>();
+    private final Map<Integer, Meal> mealStorage = new ConcurrentHashMap<>();
 
     {
         meals.forEach(this::create);
@@ -20,36 +20,27 @@ public class InMemoryMealStorage implements MealStorage {
     @Override
     public Meal create(Meal meal) {
         meal.setId(counter.getAndIncrement());
-        mealList.add(meal);
+        mealStorage.put(meal.getId(), meal);
         return meal;
     }
 
     @Override
     public void update(Meal meal) {
-        for (int i = 0; i < mealList.size(); i++) {
-            if (mealList.get(i).getId().equals(meal.getId())) {
-                mealList.set(i, meal);
-            }
-        }
+        mealStorage.put(meal.getId(), meal);
     }
 
     @Override
     public void delete(int id) {
-        mealList.remove(get(id));
+        mealStorage.remove(id);
     }
 
     @Override
     public Meal get(int id) {
-        for (Meal meal : mealList) {
-            if (meal.getId() == id) {
-                return meal;
-            }
-        }
-        return null;
+        return mealStorage.get(id);
     }
 
     @Override
-    public List<Meal> getAll() {
-        return new ArrayList<>(mealList);
+    public Collection<Meal> getAll() {
+        return mealStorage.values();
     }
 }

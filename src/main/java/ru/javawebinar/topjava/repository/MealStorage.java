@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface MealStorage {
     Meal create(Meal meal);
@@ -13,5 +13,5 @@ public interface MealStorage {
 
     Meal get(int id);
 
-    List<Meal> getAll();
+    Collection<Meal> getAll();
 }
