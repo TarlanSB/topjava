@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.UsersUtil;
 
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +19,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, 1));
+        UsersUtil.userMeals.forEach(meal -> save(meal, UsersUtil.USER_ID));
+        UsersUtil.adminMeals.forEach(meal -> save(meal, UsersUtil.ADMIN_ID));
     }
 
     @Override
@@ -32,23 +33,23 @@ public class InMemoryMealRepository implements MealRepository {
             return meal;
         }
         // handle case: update, but not present in storage
-        return meal.getUserId() != userId ? null : repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
-        return repository.get(id).getUserId() == userId && repository.remove(id) != null;
+        return repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         log.info("get {}", id);
-        return repository.get(id).getUserId() != userId ? null : repository.get(id);
+        return repository.get(id);
     }
 
     @Override
-    public Collection<Meal> getAll() {
+    public List<Meal> getAll() {
         log.info("getAll");
         return repository.values().stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())

@@ -38,7 +38,7 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("userId")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        repository.save(meal, meal.getUserId());
+        repository.save(meal, SecurityUtil.authUserId());
         response.sendRedirect("meals");
     }
 
@@ -49,9 +49,8 @@ public class MealServlet extends HttpServlet {
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
-                int userId = getUserId(request); //
                 log.info("Delete id={}", id);
-                repository.delete(id, userId); //
+                repository.delete(id, SecurityUtil.authUserId());
                 response.sendRedirect("meals");
                 break;
             case "create":
@@ -59,7 +58,7 @@ public class MealServlet extends HttpServlet {
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000,
                                 Integer.parseInt(request.getParameter("userId"))) :
-                        repository.get(getId(request), getUserId(request));//
+                        repository.get(getId(request), SecurityUtil.authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;

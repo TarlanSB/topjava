@@ -12,7 +12,7 @@ public class Meal extends AbstractBaseEntity {
 
     private final int calories;
 
-    private Integer userId;
+    private int userId;
 
     public Meal(LocalDateTime dateTime, String description, int calories, Integer userId) {
         this(null, dateTime, description, calories, userId);
@@ -24,14 +24,6 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
         this.calories = calories;
         this.userId = userId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {
