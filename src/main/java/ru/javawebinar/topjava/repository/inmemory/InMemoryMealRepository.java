@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.UsersUtil;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,8 +19,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        UsersUtil.userMeals.forEach(meal -> save(meal, UsersUtil.USER_ID));
-        UsersUtil.adminMeals.forEach(meal -> save(meal, UsersUtil.ADMIN_ID));
+        MealsUtil.userMeals.forEach(meal -> save(meal, MealsUtil.USER_ID));
+        MealsUtil.adminMeals.forEach(meal -> save(meal, MealsUtil.ADMIN_ID));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getAll() {
+    public List<Meal> getAll(int userId) {
         log.info("getAll");
         return repository.values().stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())

@@ -20,6 +20,7 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRepository repository;
+  //  private int authUserId = SecurityUtil.authUserId();
 
     @Override
     public void init() {
@@ -34,8 +35,7 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")),
-                Integer.parseInt(request.getParameter("userId")));
+                Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         repository.save(meal, SecurityUtil.authUserId());
@@ -56,8 +56,7 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000,
-                                Integer.parseInt(request.getParameter("userId"))) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         repository.get(getId(request), SecurityUtil.authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
@@ -66,7 +65,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(repository.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -76,10 +75,4 @@ public class MealServlet extends HttpServlet {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
     }
-
-    private int getUserId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("userId"));
-        return Integer.parseInt(paramId);
-    }
-
-}
+ }
