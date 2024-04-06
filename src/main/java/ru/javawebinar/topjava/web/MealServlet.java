@@ -20,7 +20,6 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRepository repository;
-  //  private int authUserId = SecurityUtil.authUserId();
 
     @Override
     public void init() {
@@ -36,6 +35,7 @@ public class MealServlet extends HttpServlet {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
+        meal.setUserId(SecurityUtil.authUserId());
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         repository.save(meal, SecurityUtil.authUserId());
@@ -75,4 +75,4 @@ public class MealServlet extends HttpServlet {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
     }
- }
+}

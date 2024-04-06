@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -45,6 +46,13 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         log.info("get {}", id);
+        Meal meal = repository.get(id);
+        if (meal == null) {
+            throw new NotFoundException("Нет такой еды!");
+        }
+        if (meal.getUserId() != userId) {
+            throw new NotFoundException("Не твоя еда!");
+        }
         return repository.get(id);
     }
 
@@ -52,6 +60,7 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         log.info("getAll");
         return repository.values().stream()
+                .filter(m -> m.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
