@@ -21,10 +21,10 @@ public class MealRestController {
         this.service = service;
     }
 
-    public Meal create(Meal meal, int userId) {
+    public Meal create(Meal meal) {
         log.info("create meal {}", meal);
         checkNew(meal);
-        return service.create(meal, userId);
+        return service.create(meal, SecurityUtil.authUserId());
     }
 
     public void update(Meal meal, int id) {

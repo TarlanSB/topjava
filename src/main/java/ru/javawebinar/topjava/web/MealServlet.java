@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,12 +30,16 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
+        String parsedId = request.getParameter("id");
+        Integer id = parsedId.isEmpty() ? null : Integer.valueOf(parsedId);
+        if (id != null) {
+            Meal meal = repository.get(id, SecurityUtil.authUserId());
+            ValidationUtil.checkNotFound(meal != null, "Нет такого meal у пользователя!");
+        }
 
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
+        Meal meal = new Meal(id, LocalDateTime.parse(request.getParameter("dateTime")), request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories"))
+        );
         meal.setUserId(SecurityUtil.authUserId());
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
@@ -50,6 +55,8 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
+                ValidationUtil.checkNotFound(repository.get(id, SecurityUtil.authUserId()) != null,
+                        "Нет такого meal у пользователя");
                 repository.delete(id, SecurityUtil.authUserId());
                 response.sendRedirect("meals");
                 break;

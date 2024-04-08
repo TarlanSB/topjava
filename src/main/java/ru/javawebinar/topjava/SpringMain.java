@@ -23,8 +23,8 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
             System.out.println("\n----mealRestController----");
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-            mealRestController.create(new Meal(null, LocalDateTime.of(2024, Month.APRIL, 6, 12, 0), "Обед", 2100), USER_ID);
-            mealRestController.create(new Meal(null, LocalDateTime.of(2024, Month.APRIL, 6, 19, 0), "Ужин", 800), USER_ID);
+            mealRestController.create(new Meal(null, LocalDateTime.of(2024, Month.APRIL, 6, 12, 0), "Обед", 2100));
+            mealRestController.create(new Meal(null, LocalDateTime.of(2024, Month.APRIL, 6, 19, 0), "Ужин", 800));
             mealRestController.update(new Meal(null, LocalDateTime.of(2024, Month.APRIL, 6, 12, 0), "Обед", 1000), USER_ID);
 
         }

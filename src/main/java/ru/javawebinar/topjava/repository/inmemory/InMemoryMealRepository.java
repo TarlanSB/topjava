@@ -42,20 +42,17 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
-        return repository.remove(id) != null;
+        return repository.get(id) != null && repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         log.info("get {}", id);
         Meal meal = repository.get(id);
-        if (meal == null) {
-            throw new NotFoundException("Нет такой еды!");
+        if (meal == null || meal.getUserId() != userId) {
+            return null;
         }
-        if (meal.getUserId() != userId) {
-            throw new NotFoundException("Не твоя еда!");
-        }
-        return repository.get(id);
+        return meal;
     }
 
     @Override
