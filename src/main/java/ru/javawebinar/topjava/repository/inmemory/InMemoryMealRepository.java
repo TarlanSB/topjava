@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +34,9 @@ public class InMemoryMealRepository implements MealRepository {
             repository.put(meal.getId(), meal);
             return meal;
         }
+        if (meal.getUserId() != userId) {
+            return null;
+        }
         // handle case: update, but not present in storage
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
@@ -42,6 +44,9 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
+        if (repository.get(id).getUserId() != userId) {
+            return false;
+        }
         return repository.get(id) != null && repository.remove(id) != null;
     }
 

@@ -30,7 +30,7 @@ public class MealRestController {
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
-        service.update(meal, meal.getUserId());
+        service.update(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
