@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 
-import static ru.javawebinar.topjava.util.MealsUtil.USER_ID;
-
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 automatic resource management (ARM)

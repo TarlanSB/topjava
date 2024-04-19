@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,10 @@ public class InMemoryMealRepository implements MealRepository {
         }
         // handle case: update, but not present in storage
         return get(meal.getId(), userId) == null ? null : repository.compute(meal.getId(),
-                (id, oldMeal) -> { meal.setUserId(userId); return meal; }
+                (id, oldMeal) -> {
+                    meal.setUserId(userId);
+                    return meal;
+                }
         );
     }
 
@@ -61,6 +66,15 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("getAll");
         return repository.values().stream()
                 .filter(m -> m.getUserId() == userId)
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Meal> getFilteredMealsByDateTime(int userId, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("getAll");
+        return repository.values().stream()
+                .filter(m -> m.getUserId() == userId)
+                .filter(m -> DateTimeUtil.isBetweenHalfOpen(repository.get(userId).getDateTime(), startTime, endTime))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }

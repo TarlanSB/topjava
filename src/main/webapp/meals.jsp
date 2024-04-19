@@ -23,6 +23,31 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
+    <form  method="get" action="meals">
+        <input type="hidden" name="action" value="filter">
+        <table border="0" cellpadding="8" cellspacing="0">
+            <thread>
+                <tr>
+                    <th>От даты (включая)</th>
+                    <th>До даты (включая)</th>
+                    <th>От времени (включая)</th>
+                    <th>До времени (исключая)</th>
+                </tr>
+            </thread>
+            <td><input type="date" name="startDate" value="${param.startDate}"></td>
+            <td><input type="date" name="endDate" value="${param.endDate}"></td>
+            <td><input type="time" name="startTime" value="${param.startTime}"></td>
+            <td><input type="time" name="endTime" value="${param.endTime}"></td>
+            <tr>
+                <td colspan="4">
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button type="submit">Отфильтровать</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
