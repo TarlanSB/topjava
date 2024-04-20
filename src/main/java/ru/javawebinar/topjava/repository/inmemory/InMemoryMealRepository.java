@@ -74,7 +74,7 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("getAll");
         return repository.values().stream()
                 .filter(m -> m.getUserId() == userId)
-                .filter(m -> DateTimeUtil.isBetweenHalfOpen(repository.get(userId).getDateTime(), startTime, endTime))
+                .filter(m -> DateTimeUtil.isBetweenHalfOpen(m.getDateTime(), startTime, endTime))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }

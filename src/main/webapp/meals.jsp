@@ -23,7 +23,7 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <form  method="get" action="meals">
+    <form  method="get" >
         <input type="hidden" name="action" value="filter">
         <table border="0" cellpadding="8" cellspacing="0">
             <thread>
