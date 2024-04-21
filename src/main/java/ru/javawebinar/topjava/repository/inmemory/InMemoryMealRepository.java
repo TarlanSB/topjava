@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -64,17 +65,18 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         log.info("getAll");
-        return repository.values().stream()
-                .filter(m -> m.getUserId() == userId)
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+        return filterByPredicate(userId, meal -> true);
     }
 
     public List<Meal> getFilteredMealsByDateTime(int userId, LocalDateTime startTime, LocalDateTime endTime) {
         log.info("getAll");
+        return filterByPredicate(userId, m -> DateTimeUtil.isBetweenHalfOpen(m.getDateTime(), startTime, endTime));
+    }
+
+    public List<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
         return repository.values().stream()
                 .filter(m -> m.getUserId() == userId)
-                .filter(m -> DateTimeUtil.isBetweenHalfOpen(m.getDateTime(), startTime, endTime))
+                .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }

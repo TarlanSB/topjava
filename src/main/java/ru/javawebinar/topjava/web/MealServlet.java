@@ -25,7 +25,7 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRestController mealController;
-    ConfigurableApplicationContext appCtx;
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init() {
@@ -34,7 +34,6 @@ public class MealServlet extends HttpServlet {
     }
 
     public void destroy() {
-        super.destroy();
         appCtx.close();
     }
 
@@ -81,7 +80,7 @@ public class MealServlet extends HttpServlet {
                 LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
                 LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
                 request.setAttribute("meals", mealController.getFilteredMealsToByStartEndDateTime(startDate, endDate,
-                        startTime, endTime, authUserId()));
+                        startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
