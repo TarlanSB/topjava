@@ -47,7 +47,8 @@ public class MealRestController {
         return service.get(id, SecurityUtil.authUserId());
     }
 
-    public List<Meal> getAll(int userId) {
+    public List<Meal> getAll() {
+        int userId = SecurityUtil.authUserId();
         log.info("getAll meal");
         return service.getAll(userId);
     }

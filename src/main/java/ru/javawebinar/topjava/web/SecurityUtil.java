@@ -7,7 +7,7 @@ public class SecurityUtil {
     private static int userId = 1;
 
     public static int authUserId() {
-        return 1;
+        return userId;
     }
 
     public static int authUserCaloriesPerDay() {
