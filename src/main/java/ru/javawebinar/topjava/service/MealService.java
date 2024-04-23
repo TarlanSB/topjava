@@ -41,8 +41,18 @@ public class MealService {
     }
 
     public List<Meal> getFilteredMealByDate(LocalDate startDate, LocalDate endDate, int userId) {
-        LocalDateTime ltd1 = startDate.atStartOfDay();
-        LocalDateTime ltd2 = endDate.plus(1, ChronoUnit.DAYS).atStartOfDay();
+        LocalDateTime ltd1 = getStartLocalDateTime(startDate);
+        LocalDateTime ltd2 = getEndLocalDateTime(endDate);
         return repository.getFilteredMealsByDateTime(userId, ltd1, ltd2);
+    }
+
+    private LocalDateTime getStartLocalDateTime(LocalDate startDate) {
+        return startDate == null ? LocalDateTime.of(-999999999, 1, 1, 0, 0)
+                : startDate.atStartOfDay();
+    }
+
+    private LocalDateTime getEndLocalDateTime(LocalDate endDate) {
+        return endDate == null ? LocalDateTime.of(+999999999, 12, 31, 0, 0)
+                : endDate.plus(1, ChronoUnit.DAYS).atStartOfDay();
     }
 }
