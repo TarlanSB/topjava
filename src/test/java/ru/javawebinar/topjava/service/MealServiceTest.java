@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -20,8 +21,8 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.MealTestData.assertMatch;
-
-
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -43,7 +44,7 @@ public class MealServiceTest {
     @Test
     public void get() {
         Meal meal = service.get(MEAL_ID, USER_ID);
-        assertMatch(meal, MealTestData.USER_MEAL1);
+        assertMatch(meal, MealTestData.userMeal1);
     }
 
     @Test
@@ -55,13 +56,13 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() {
         assertMatch(service.getBetweenInclusive(LocalDate.of(2020, Month.JANUARY, 30),
-                LocalDate.of(2020, Month.JANUARY, 31), USER_ID), MEAL_LIST);
+                LocalDate.of(2020, Month.JANUARY, 30), USER_ID), userMeal3, userMeal2, userMeal1);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID);
-        assertMatch(all, MealTestData.MEAL_LIST);
+        assertMatch(all, MealTestData.mealList);
     }
 
     @Test
@@ -104,5 +105,11 @@ public class MealServiceTest {
     @Test
     public void updateWrongUser() {
         assertThrows(NotFoundException.class, () -> service.update(service.get(MEAL_ID, USER_ID), ADMIN_ID));
+    }
+
+    @Test
+    public void duplicateDateTimeCreate() {
+        assertThrows(DataAccessException.class, () ->
+                service.create(new Meal(null, userMeal1.getDateTime(), "Завтрак", 500), USER_ID));
     }
 }
