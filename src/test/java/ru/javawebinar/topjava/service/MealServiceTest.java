@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.concurrent.TimeUnit;
 
-
 import static org.junit.Assert.assertThrows;
 import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -41,14 +40,6 @@ public class MealServiceTest {
     private static final Logger logger = getLogger("");
     private static final StringBuilder sb = new StringBuilder();
 
-    private static void logInfo(Description description, long nanos) {
-        String testName = description.getMethodName();
-        String stringInfo = (String.format("Test %s %s %d microseconds",
-                testName, " - ", TimeUnit.NANOSECONDS.toMicros(nanos)));
-        sb.append("\n").append(stringInfo);
-        logger.info(stringInfo);
-    }
-
     @Rule
     public final Stopwatch stopwatch = new Stopwatch() {
         @Override
@@ -57,9 +48,17 @@ public class MealServiceTest {
         }
     };
 
+    private static void logInfo(Description description, long nanos) {
+        String testName = description.getMethodName();
+        String stringInfo = (String.format("%-30s %d ms",
+                testName, TimeUnit.NANOSECONDS.toMillis(nanos)));
+        sb.append("\n").append(stringInfo);
+        logger.info(stringInfo);
+    }
+
     @AfterClass
     public static void printTestNameAndTestRuntime() {
-        System.out.println(sb + "\n");
+        logger.info("\n" + sb + "\n");
     }
 
     @Test
