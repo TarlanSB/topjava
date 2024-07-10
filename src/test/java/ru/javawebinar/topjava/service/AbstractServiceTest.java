@@ -40,12 +40,12 @@ public abstract class AbstractServiceTest {
         }
     };
 
-    @AfterClass
-    public static void printResult() {
-        log.info("\n---------------------------------" +
-                "\nTest                 Duration, ms" +
-                "\n---------------------------------" +
-                results +
-                "\n---------------------------------");
-    }
+//    @AfterClass
+//    public static void printResult() {
+//        log.info("\n---------------------------------" +
+//                "\nTest                 Duration, ms" +
+//                "\n---------------------------------" +
+//                results +
+//                "\n---------------------------------");
+//    }
 }
