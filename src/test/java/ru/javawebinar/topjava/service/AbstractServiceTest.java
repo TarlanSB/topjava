@@ -12,6 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+
 import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,16 +37,16 @@ public abstract class AbstractServiceTest {
             String result = String.format("%-95s %7d", description.getDisplayName(), TimeUnit.NANOSECONDS.toMillis(nanos));
             results.append(result).append('\n');
             log.info(result + " ms\n");
-
         }
     };
 
-//    @AfterClass
-//    public static void printResult() {
-//        log.info("\n---------------------------------" +
-//                "\nTest                 Duration, ms" +
-//                "\n---------------------------------" +
-//                results +
-//                "\n---------------------------------");
-//    }
+    @AfterClass
+    public static void printResult() {
+        log.info("\n---------------------------------" +
+                "\nTest                 Duration, ms" +
+                "\n---------------------------------" +
+                results +
+                "\n---------------------------------");
+        results.delete(0, results.length() - 1);
+    }
 }
