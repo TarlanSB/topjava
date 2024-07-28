@@ -27,26 +27,26 @@ import static org.slf4j.LoggerFactory.getLogger;
 public abstract class AbstractServiceTest {
     private static final Logger log = getLogger("result");
 
-    private static StringBuilder results = new StringBuilder();
+    private static final StringBuilder results = new StringBuilder();
 
     @Rule
     // http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev
-    public Stopwatch stopwatch = new Stopwatch() {
+    public final Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String result = String.format("%-95s %7d", description.getDisplayName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-            results.append(result).append('\n');
+            String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append(result);
             log.info(result + " ms\n");
         }
     };
 
+    private static final String DELIM = "-".repeat(103);
+
     @AfterClass
     public static void printResult() {
-        log.info("\n---------------------------------" +
-                "\nTest                 Duration, ms" +
-                "\n---------------------------------\n" +
-                results +
-                "\n---------------------------------");
-        results = new StringBuilder();
+        log.info("\n" + DELIM +
+                "\nTest                                                                                       Duration, ms" +
+                "\n" + DELIM + "\n" + results + DELIM + "\n");
+        results.setLength(0);
     }
 }
