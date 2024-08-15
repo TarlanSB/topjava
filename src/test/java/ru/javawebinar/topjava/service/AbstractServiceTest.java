@@ -36,6 +36,9 @@ public abstract class AbstractServiceTest {
     @Rule
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
+    @Autowired
+    private Environment environment;
+
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
     protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
         assertThrows(rootExceptionClass, () -> {
@@ -46,9 +49,6 @@ public abstract class AbstractServiceTest {
             }
         });
     }
-
-    @Autowired
-    private Environment environment;
 
     public boolean isJpa() {
         return Arrays.stream(environment.getActiveProfiles()).anyMatch(s -> Profiles.JPA.equals(s) || Profiles.DATAJPA.equals(s));

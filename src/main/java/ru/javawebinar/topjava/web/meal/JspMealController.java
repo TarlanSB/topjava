@@ -39,18 +39,6 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("/mealform")
-    public String mealForm(@RequestParam(value = "id", required = false) Integer id, Model model) {
-        Meal meal;
-        if (id == null) {
-            meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
-        } else {
-            meal = super.get(id);
-        }
-        model.addAttribute("meal", meal);
-        return "mealForm";
-    }
-
     @GetMapping(value = "/filter")
     public String getBetween(Model model, HttpServletRequest request) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
@@ -74,7 +62,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @PostMapping("/meals")
+    @PostMapping()
     public String updateOrCreate(HttpServletRequest request) {
         Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -87,7 +75,7 @@ public class JspMealController extends AbstractMealController {
         return "redirect:/meals";
     }
 
-    public int getId(HttpServletRequest request) {
+    private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
     }
